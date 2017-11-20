@@ -12,6 +12,7 @@ class Controller:
 
             self.gameClock = pygame.time.Clock()
 
+            self.score = 0
 
             self.testNote = note.Note("assets/circle.png",320, 100, 1)
             self.catcher = note.Note("assets/circle.png",320, 400, 0)
@@ -32,10 +33,6 @@ class Controller:
                             #collisions
                             if(pygame.sprite.collide_rect(self.testNote, self.catcher)):
                                 self.background.fill((250,0,0))
-
-
-
-                    #print(event)
                 ##END OF EVENT LOOP
 
                 self.testNote.move()
