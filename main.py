@@ -1,4 +1,4 @@
-import pygame #imports the basic pygame modules, pygame has many other modules inside of it as well, this will import most of them
+import pygame, pygame.font #imports the basic pygame modules, pygame has many other modules inside of it as well, this will import most of them
 import note
 import song
 import songInfo1
@@ -12,9 +12,13 @@ class Controller:
             pygame.display.set_caption("This is a caption")  #sets caption for window
             self.background = pygame.Surface(self.screen.get_size()).convert()
 
+            self.gameFont = pygame.font.SysFont("timesnewromanms", 32)
+
             self.gameClock = pygame.time.Clock()
 
             self.score = 0
+            self.scoreText = self.gameFont.render("Score:"+str(self.score), True, (50,0,0))
+
 
             """
             THIS CODE IS A HOT PIECE OF GARBAGE IM SORRY TEXT ME IF YOU DONT GET IT
@@ -26,11 +30,10 @@ class Controller:
 
             self.notes = []
 
-
-            self.catcher1 = note.Note("assets/circle1.png",100, 400, 0)
-            self.catcher2 = note.Note("assets/circle1.png",200, 400, 0)
-            self.catcher3 = note.Note("assets/circle1.png",300, 400, 0)
-            self.catcher4 = note.Note("assets/circle1.png",400, 400, 0)
+            self.catcher1 = note.Note("assets/circle1.png",100, 350, 0)
+            self.catcher2 = note.Note("assets/circle1.png",200, 350, 0)
+            self.catcher3 = note.Note("assets/circle1.png",300, 350, 0)
+            self.catcher4 = note.Note("assets/circle1.png",400, 350, 0)
             self.sprites = pygame.sprite.Group((self.notes,self.catcher1,self.catcher2,self.catcher3,self.catcher4))
 
 
@@ -55,29 +58,42 @@ class Controller:
                                 if(pygame.sprite.collide_rect(self.notes[i], self.catcher1)):
                                     self.background.fill((250,0,0)) #if so do this
                                     self.score += 100
+                                    self.notes[i].kill()
+                                    del self.notes[i]
+                                    break
+
                         elif (event.key == pygame.K_w):
                             for i in range(len(self.notes)):
                                 #collisions\
                                 if(pygame.sprite.collide_rect(self.notes[i], self.catcher2)):
                                     self.background.fill((50,250,0))
                                     self.score += 100
-                                    #add note deletion
+                                    self.notes[i].kill()
+                                    del self.notes[i]
+                                    break
+
                         elif (event.key == pygame.K_e):
                             for i in range(len(self.notes)):
                                 #collisions\
                                 if(pygame.sprite.collide_rect(self.notes[i], self.catcher3)):
                                     self.background.fill((50,0,0))
                                     self.score += 100
-                                    #add note deletion
+                                    self.notes[i].kill()
+                                    del self.notes[i]
+                                    break
+
                         elif (event.key == pygame.K_r):
                             for i in range(len(self.notes)):
                                 #collisions\
                                 if(pygame.sprite.collide_rect(self.notes[i], self.catcher4)):
                                     self.background.fill((0,0,250))
                                     self.score += 100
-                                    #add note deletion
+                                    self.notes[i].kill()
+                                    del self.notes[i]
+                                    break
 
                 ##END OF EVENT LOOP
+
 
                 #note spawning
                 if(self.testSong.track1[spawnIter] == 2):
@@ -98,15 +114,27 @@ class Controller:
                 for i in self.notes:
                     i.move()
 
+                #checks to see if notes have gone off the screen, if so delete them
+                for i in range(len(self.notes)):
+                    if(self.notes[i].rect.y > self.height - 50):
+                        self.notes[i].kill()
+                        del self.notes[i]
+                        print("Note out of bounds! Deleted")
+                        break
+
+
 
                 ###END OF GAME LOOP STUFF
                 self.screen.blit(self.background, (0, 0))
+                #updates the sprite group ( accounting for the deleted notes ) and displays it
                 self.sprites = pygame.sprite.Group((self.notes,self.catcher1,self.catcher2,self.catcher3,self.catcher4))
                 self.sprites.draw(self.screen)
+                #updates score and displays it
+                self.scoreText = self.gameFont.render("Score:"+str(self.score), True, (50,0,0))
+                self.screen.blit(self.scoreText, (50,50))
                 pygame.display.flip()
-                #find way to delete excess notes
 
-                #### END OF GAME LOOP
+            #### END OF GAME LOOP
 
 
 
