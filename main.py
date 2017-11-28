@@ -2,6 +2,7 @@ import pygame, pygame.font #imports the basic pygame modules, pygame has many ot
 import note
 import song
 import songInfo1
+import colorCycle
 
 class Controller:
     def __init__(self, width =640, height = 480):
@@ -9,7 +10,7 @@ class Controller:
             self.width = width
             self.height = height
             self.screen = pygame.display.set_mode((self.width, self.height))  #sets up a display object
-            pygame.display.set_caption("This is a caption")  #sets caption for window
+            pygame.display.set_caption("Rh")  #sets caption for window
             self.background = pygame.Surface(self.screen.get_size()).convert()
 
             self.gameFont = pygame.font.SysFont("timesnewromanms", 32)
@@ -42,9 +43,15 @@ class Controller:
             spawnIter = 0   #iteration variable to control the song file reading
             crashed = False
 
+            (r, g, b) = (255, 255, 255)
+            colorFlag = True
+
             #### START OF GAME LOOP
             while not crashed:  #basic game loop, will run until we want to stop #most game logic will be here
-                self.background.fill((255,255,255))
+
+                (r,g,b, colorFlag) = colorCycle.cycle(r,g,b, colorFlag)
+
+                self.background.fill((r, g, b))
                 self.gameClock.tick(30)
                 ##EVENT LOOP
                 for event in pygame.event.get():    #pygame has events: basically "when things happen"
