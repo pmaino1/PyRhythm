@@ -30,10 +30,10 @@ class Controller:
 
             self.notes = []
 
-            self.catcher1 = note.Note("assets/circle1.png",100, 350, 0)
-            self.catcher2 = note.Note("assets/circle1.png",200, 350, 0)
-            self.catcher3 = note.Note("assets/circle1.png",300, 350, 0)
-            self.catcher4 = note.Note("assets/circle1.png",400, 350, 0)
+            self.catcher1 = note.Note("assets/circle2.png",150, 400, 0)
+            self.catcher2 = note.Note("assets/circle2.png",250, 400, 0)
+            self.catcher3 = note.Note("assets/circle2.png",350, 400, 0)
+            self.catcher4 = note.Note("assets/circle2.png",450, 400, 0)
             self.sprites = pygame.sprite.Group((self.notes,self.catcher1,self.catcher2,self.catcher3,self.catcher4))
 
 
@@ -100,13 +100,13 @@ class Controller:
                     print("the end")
                 else:
                     if(self.testSong.track1[spawnIter] == 1):
-                        self.notes.append(note.Note("assets/circle1.png",100, 0, 1))
+                        self.notes.append(note.Note("assets/circle2.png",150, 0, 1))
                     if(self.testSong.track2[spawnIter] == 1):
-                        self.notes.append(note.Note("assets/circle1.png",200, 0, 1))
+                        self.notes.append(note.Note("assets/circle2.png",250, 0, 1))
                     if(self.testSong.track3[spawnIter] == 1):
-                        self.notes.append(note.Note("assets/circle1.png",300, 0, 1))
+                        self.notes.append(note.Note("assets/circle2.png",350, 0, 1))
                     if(self.testSong.track4[spawnIter] == 1):
-                        self.notes.append(note.Note("assets/circle1.png",400, 0, 1))
+                        self.notes.append(note.Note("assets/circle2.png",450, 0, 1))
                     spawnIter += 1
 
 
