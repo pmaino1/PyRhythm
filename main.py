@@ -59,7 +59,7 @@ class Controller:
                             for i in range(len(self.notes)):
                                 #collisions\
                                 if(pygame.sprite.collide_rect(self.notes[i], self.catcher1)):
-                                    self.background.fill((250,0,0))
+                                    self.background.fill((255,255,255))
                                     self.score += 100
                                     self.notes[i].kill()    #adds to score and delete the note
                                     del self.notes[i]
@@ -73,7 +73,7 @@ class Controller:
                             for i in range(len(self.notes)):
                                 #collisions\
                                 if(pygame.sprite.collide_rect(self.notes[i], self.catcher2)):
-                                    self.background.fill((50,250,0))
+                                    self.background.fill((255,255,255))
                                     self.score += 100
                                     self.notes[i].kill()
                                     del self.notes[i]
@@ -87,7 +87,7 @@ class Controller:
                             for i in range(len(self.notes)):
                                 #collisions\
                                 if(pygame.sprite.collide_rect(self.notes[i], self.catcher3)):
-                                    self.background.fill((50,0,0))
+                                    self.background.fill((255,255,255))
                                     self.score += 100
                                     self.notes[i].kill()
                                     del self.notes[i]
@@ -101,7 +101,7 @@ class Controller:
                             for i in range(len(self.notes)):
                                 #collisions\
                                 if(pygame.sprite.collide_rect(self.notes[i], self.catcher4)):
-                                    self.background.fill((0,0,250))
+                                    self.background.fill((255,255,255))
                                     self.score += 100
                                     self.notes[i].kill()
                                     del self.notes[i]
