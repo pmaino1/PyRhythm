@@ -2,7 +2,7 @@
 
 #1 = note 0 = no note 2 = end of song
 
-
+bpm = 1
 
 #bpm = 1    IMPLIMENT THIS LATER
 track1 = [  #placeholder test stuff

@@ -27,7 +27,7 @@ class Controller:
             SO DONT FORGET THAT
             """
 
-            self.testSong = song.Song(1, songInfo1.track1, songInfo1.track2, songInfo1.track3, songInfo1.track4)
+            self.testSong = song.Song(songInfo1.bpm, songInfo1.track1, songInfo1.track2, songInfo1.track3, songInfo1.track4)
 
             self.notes = []
 
@@ -36,7 +36,6 @@ class Controller:
             self.catcher3 = note.Note("assets/circle2.png",350, 400, 0)
             self.catcher4 = note.Note("assets/circle2.png",450, 400, 0)
             self.sprites = pygame.sprite.Group((self.notes,self.catcher1,self.catcher2,self.catcher3,self.catcher4))
-
 
 
     def mainLoop(self):
@@ -49,9 +48,10 @@ class Controller:
             #### START OF GAME LOOP
             while not crashed:  #basic game loop, will run until we want to stop #most game logic will be here
 
+                #Makes background cycle between colors
                 (r,g,b, colorFlag) = colorCycle.cycle(r,g,b, colorFlag)
-
                 self.background.fill((r, g, b))
+
                 self.gameClock.tick(30)
                 ##EVENT LOOP
                 for event in pygame.event.get():    #pygame has events: basically "when things happen"
@@ -107,13 +107,13 @@ class Controller:
                     print("the end")
                 else:
                     if(self.testSong.track1[spawnIter] == 1):
-                        self.notes.append(note.Note("assets/circle2.png",150, 0, 1))
+                        self.notes.append(note.Note("assets/circle2.png",150, 0, 5))
                     if(self.testSong.track2[spawnIter] == 1):
-                        self.notes.append(note.Note("assets/circle2.png",250, 0, 1))
+                        self.notes.append(note.Note("assets/circle2.png",250, 0, 5))
                     if(self.testSong.track3[spawnIter] == 1):
-                        self.notes.append(note.Note("assets/circle2.png",350, 0, 1))
+                        self.notes.append(note.Note("assets/circle2.png",350, 0, 5))
                     if(self.testSong.track4[spawnIter] == 1):
-                        self.notes.append(note.Note("assets/circle2.png",450, 0, 1))
+                        self.notes.append(note.Note("assets/circle2.png",450, 0, 5))
                     spawnIter += 1
 
 
