@@ -13,7 +13,7 @@ class Note(pygame.sprite.Sprite):
         self.speed = speed
 
         self.ogImage = self.image            #ONLY FOR THE CATCHERS AS WELL
-        self.trackhit = trackhit #ONLY FOR THE CATCHERS, CONTROLLS WHEN TO CHANGE THE CATCHER TO GREY
+        self.trackhit = trackhit             #ONLY FOR THE CATCHERS, CONTROLLS WHEN TO CHANGE THE CATCHER TO GREY
 
     def move(self):
         self.rect.y += self.speed

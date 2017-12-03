@@ -17,14 +17,12 @@ class Controller:
 
             self.score = 0
             self.scoreText = self.gameFont.render("Score:"+str(self.score), True, (50,0,0))
+            self.controlText = self.gameFont.render("Use Q, W, E, and R to hit the notes!", True, (255,255,255))
 
             self.Song1 = song.Song(stacys_mom.filename ,stacys_mom.track1, stacys_mom.track2, stacys_mom.track3, stacys_mom.track4)
 
-
             self.notes = []
-
             self.noteSpeed = 3
-
             self.noteclick = pygame.image.load("assets/noteclick.png")
 
             self.catcher1 = note.Note("assets/note1.png",150, 400, 0)
@@ -39,11 +37,25 @@ class Controller:
     def mainLoop(self):
             spawnIter = 0   #iteration variable to control the song file reading
             spawnTimer = 0 #iteration variable to make the computer read the notes at proper times
-            crashed = False
+            crashed = False         #Vars to control the game and title screen loops
             isSongStarted = False
 
             (r, g, b) = (255, 255, 255)
             colorFlag = True
+
+            ####TITLE SCREEN LOOP
+            isTitleScreen = True
+            while isTitleScreen:
+                for event in pygame.event.get():
+                    if (event.type == pygame.KEYDOWN):
+                        isTitleScreen = False
+                        break
+
+                self.screen.blit(self.background, (0, 0))
+                self.screen.blit(self.controlText, (50, 50))
+                pygame.display.flip()
+            ####END OF TITLE SCREEN LOOP
+
 
             #### START OF GAME LOOP
             while not crashed:  #basic game loop, will run until we want to stop #most game logic will be here
@@ -128,6 +140,10 @@ class Controller:
 
 
                 #CATCHER ANIMATION CONTROLLER
+                """When a key is pressed the "trackhit" value for the catcher objects are set to 5,
+                and when one of those values is non-0 this loop will change it to a "hit" ANIMATION
+                 and will subtract 1 from trackhit, when trackhit is 0, it restores the catcher back to
+                its original image (stored as ogImage)"""
                 for i in self.catchers:
                     if i.trackhit == 1:
                         i.image = i.ogImage
@@ -140,7 +156,11 @@ class Controller:
 
 
                 #note spawning
-                if spawnTimer == 9:    #basically, the timer means it only iterates through the tracklists every 10 ticks = 8th note
+                """The notespawning system works as follows: For the song, which is 120 BPM, 10 ticks in 40 fps is an eighth note in the Song
+                , so SpawnTimer will iterate 10 times. On the 10th iteration, it will increase another iteration variable, spawnIter, and then
+                indexes the 4 lists of the song using spawnIter. Each list represents a track, and if it sees a 1 on that list, it will spawn a
+                note on the corresponding track. 2 will signify the end of the program"""
+                if spawnTimer == 9:
                     spawnTimer = 0
                     if(self.Song1.track1[spawnIter] == 2):
                         print("the end")
@@ -159,17 +179,18 @@ class Controller:
 
 
                 #moves all the notes
+                """ iterates through the list of note objects and calls their move method"""
                 for i in self.notes:
                     i.move()
 
                 #checks to see if notes have gone off the screen, if so delete them
+                """ITerates through the list of notes, and deletes them if they have gone too low, as well well subtracting points from their score"""
                 for i in range(len(self.notes)):
                     if(self.notes[i].rect.y > self.height - 50):
                         self.notes[i].kill()
                         del self.notes[i]
                         if self.score >= 50:
                             self.score -= 50
-                        print("Note out of bounds! Deleted")
                         break
 
 
