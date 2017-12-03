@@ -1,7 +1,7 @@
 import pygame, pygame.font #imports the basic pygame modules, pygame has many other modules inside of it as well, this will import most of them
 import note
 import song
-import songInfo1
+import stacys_mom
 import colorCycle
 
 class Controller:
@@ -18,9 +18,12 @@ class Controller:
             self.score = 0
             self.scoreText = self.gameFont.render("Score:"+str(self.score), True, (50,0,0))
 
-            self.testSong = song.Song(songInfo1.track1, songInfo1.track2, songInfo1.track3, songInfo1.track4)
+            self.Song1 = song.Song(stacys_mom.filename ,stacys_mom.track1, stacys_mom.track2, stacys_mom.track3, stacys_mom.track4)
+
 
             self.notes = []
+
+            self.noteSpeed = 3
 
             self.noteclick = pygame.image.load("assets/noteclick.png")
 
@@ -35,7 +38,9 @@ class Controller:
 
     def mainLoop(self):
             spawnIter = 0   #iteration variable to control the song file reading
+            spawnTimer = 0 #iteration variable to make the computer read the notes at proper times
             crashed = False
+            isSongStarted = False
 
             (r, g, b) = (255, 255, 255)
             colorFlag = True
@@ -47,7 +52,7 @@ class Controller:
                 (r,g,b, colorFlag) = colorCycle.cycle(r,g,b, colorFlag)
                 self.background.fill((r, g, b))
 
-                self.gameClock.tick(30)
+                self.gameClock.tick(40)
                 ##EVENT LOOP
                 for event in pygame.event.get():    #pygame has events: basically "when things happen"
                     if (event.type == pygame.QUIT):   #this will check if we do the quit event, and will crash the program
@@ -65,7 +70,7 @@ class Controller:
                                     del self.notes[i]
                                     break
                                 else:
-                                    if self.score > 5:
+                                    if self.score >= 5:
                                         self.score -= 5
 
                         elif (event.key == pygame.K_w):
@@ -79,7 +84,7 @@ class Controller:
                                     del self.notes[i]
                                     break
                                 else:
-                                    if self.score > 5:
+                                    if self.score >= 5:
                                         self.score -= 5
 
                         elif (event.key == pygame.K_e):
@@ -93,7 +98,7 @@ class Controller:
                                     del self.notes[i]
                                     break
                                 else:
-                                    if self.score > 5:
+                                    if self.score >= 5:
                                         self.score -= 5
 
                         elif (event.key == pygame.K_r):
@@ -107,10 +112,19 @@ class Controller:
                                     del self.notes[i]
                                     break
                                 else:
-                                    if self.score > 5:
+                                    if self.score >= 5:
                                         self.score -= 5
 
                 ##END OF EVENT LOOP
+
+                #Audio start controller
+                if not isSongStarted:
+                    for i in self.notes:
+                        for j in self.catchers:
+                            if pygame.sprite.collide_rect(i, j):
+                                self.Song1.playSong()
+                                isSongStarted = True
+                                break
 
 
                 #CATCHER ANIMATION CONTROLLER
@@ -126,18 +140,22 @@ class Controller:
 
 
                 #note spawning
-                if(self.testSong.track1[spawnIter] == 2):
-                    print("the end")
+                if spawnTimer == 9:    #basically, the timer means it only iterates through the tracklists every 10 ticks = 8th note
+                    spawnTimer = 0
+                    if(self.Song1.track1[spawnIter] == 2):
+                        print("the end")
+                    else:
+                        if(self.Song1.track1[spawnIter] == 1):
+                            self.notes.append(note.Note("assets/note1.png",150, 0, self.noteSpeed))
+                        if(self.Song1.track2[spawnIter] == 1):
+                            self.notes.append(note.Note("assets/note2.png",250, 0, self.noteSpeed))
+                        if(self.Song1.track3[spawnIter] == 1):
+                            self.notes.append(note.Note("assets/note3.png",350, 0, self.noteSpeed))
+                        if(self.Song1.track4[spawnIter] == 1):
+                            self.notes.append(note.Note("assets/note4.png",450, 0, self.noteSpeed))
+                        spawnIter += 1
                 else:
-                    if(self.testSong.track1[spawnIter] == 1):
-                        self.notes.append(note.Note("assets/note1.png",150, 0, 5))
-                    if(self.testSong.track2[spawnIter] == 1):
-                        self.notes.append(note.Note("assets/note2.png",250, 0, 5))
-                    if(self.testSong.track3[spawnIter] == 1):
-                        self.notes.append(note.Note("assets/note3.png",350, 0, 5))
-                    if(self.testSong.track4[spawnIter] == 1):
-                        self.notes.append(note.Note("assets/note4.png",450, 0, 5))
-                    spawnIter += 1
+                    spawnTimer += 1
 
 
                 #moves all the notes
@@ -149,7 +167,7 @@ class Controller:
                     if(self.notes[i].rect.y > self.height - 50):
                         self.notes[i].kill()
                         del self.notes[i]
-                        if self.score > 50:
+                        if self.score >= 50:
                             self.score -= 50
                         print("Note out of bounds! Deleted")
                         break
