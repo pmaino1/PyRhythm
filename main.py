@@ -10,19 +10,20 @@ class Controller:
             self.width = width
             self.height = height
             self.screen = pygame.display.set_mode((self.width, self.height))  #sets up a display object
-            pygame.display.set_caption("Rh")  #sets caption for window
+            pygame.display.set_caption("PyRhythm!")  #sets caption for window
             self.background = pygame.Surface(self.screen.get_size()).convert()
-            self.gameFont = pygame.font.SysFont("timesnewromanms", 32)
+            self.gameFont = pygame.font.SysFont("gadugi", 32)
             self.gameClock = pygame.time.Clock()
 
             self.score = 0
             self.scoreText = self.gameFont.render("Score:"+str(self.score), True, (50,0,0))
             self.controlText = self.gameFont.render("Use Q, W, E, and R to hit the notes!", True, (255,255,255))
+            self.titleText = self.gameFont.render("PyRhythm!", True, (255, 255, 255))
 
             self.Song1 = song.Song(stacys_mom.filename ,stacys_mom.track1, stacys_mom.track2, stacys_mom.track3, stacys_mom.track4)
 
             self.notes = []
-            self.noteSpeed = 3
+            self.noteSpeed = 2
             self.noteclick = pygame.image.load("assets/noteclick.png")
 
             self.catcher1 = note.Note("assets/note1.png",150, 400, 0)
@@ -40,6 +41,7 @@ class Controller:
             crashed = False         #Vars to control the game and title screen loops
             isSongStarted = False
 
+
             (r, g, b) = (255, 255, 255)
             colorFlag = True
 
@@ -53,6 +55,7 @@ class Controller:
 
                 self.screen.blit(self.background, (0, 0))
                 self.screen.blit(self.controlText, (50, 50))
+                self.screen.blit(self.titleText, (250,240))
                 pygame.display.flip()
             ####END OF TITLE SCREEN LOOP
 
@@ -64,7 +67,8 @@ class Controller:
                 (r,g,b, colorFlag) = colorCycle.cycle(r,g,b, colorFlag)
                 self.background.fill((r, g, b))
 
-                self.gameClock.tick(40)
+                self.gameClock.tick_busy_loop(59)
+                print(self.gameClock.get_fps())
                 ##EVENT LOOP
                 for event in pygame.event.get():    #pygame has events: basically "when things happen"
                     if (event.type == pygame.QUIT):   #this will check if we do the quit event, and will crash the program
@@ -160,7 +164,7 @@ class Controller:
                 , so SpawnTimer will iterate 10 times. On the 10th iteration, it will increase another iteration variable, spawnIter, and then
                 indexes the 4 lists of the song using spawnIter. Each list represents a track, and if it sees a 1 on that list, it will spawn a
                 note on the corresponding track. 2 will signify the end of the program"""
-                if spawnTimer == 9:
+                if spawnTimer == 14:
                     spawnTimer = 0
                     if(self.Song1.track1[spawnIter] == 2):
                         print("the end")
@@ -174,9 +178,9 @@ class Controller:
                         if(self.Song1.track4[spawnIter] == 1):
                             self.notes.append(note.Note("assets/note4.png",450, 0, self.noteSpeed))
                         spawnIter += 1
+
                 else:
                     spawnTimer += 1
-
 
                 #moves all the notes
                 """ iterates through the list of note objects and calls their move method"""
