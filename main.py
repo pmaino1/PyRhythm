@@ -23,7 +23,7 @@ class Controller:
             self.Song1 = song.Song(stacys_mom.filename ,stacys_mom.track1, stacys_mom.track2, stacys_mom.track3, stacys_mom.track4)
 
             self.notes = []
-            self.noteSpeed = 2
+            self.noteSpeed = 3
             self.noteclick = pygame.image.load("assets/noteclick.png")
 
             self.catcher1 = note.Note("assets/note1.png",150, 400, 0)
@@ -67,7 +67,7 @@ class Controller:
                 (r,g,b, colorFlag) = colorCycle.cycle(r,g,b, colorFlag)
                 self.background.fill((r, g, b))
 
-                self.gameClock.tick_busy_loop(59)
+                self.gameClock.tick_busy_loop(40)
                 print(self.gameClock.get_fps())
                 ##EVENT LOOP
                 for event in pygame.event.get():    #pygame has events: basically "when things happen"
@@ -164,7 +164,7 @@ class Controller:
                 , so SpawnTimer will iterate 10 times. On the 10th iteration, it will increase another iteration variable, spawnIter, and then
                 indexes the 4 lists of the song using spawnIter. Each list represents a track, and if it sees a 1 on that list, it will spawn a
                 note on the corresponding track. 2 will signify the end of the program"""
-                if spawnTimer == 14:
+                if spawnTimer == 9:
                     spawnTimer = 0
                     if(self.Song1.track1[spawnIter] == 2):
                         print("the end")
