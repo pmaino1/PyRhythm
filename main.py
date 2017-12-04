@@ -3,23 +3,31 @@ import note
 import song
 import stacys_mom
 import colorCycle
+import random
 
 class Controller:
     def __init__(self, width =640, height = 480):
-            pygame.init()#initialized most of the pygame modules, you need to do this or stuff wont work
+            pygame.init() #initialized most of the pygame modules, you need to do this or stuff wont work
             self.width = width
             self.height = height
             self.screen = pygame.display.set_mode((self.width, self.height))  #sets up a display object
             pygame.display.set_caption("PyRhythm!")  #sets caption for window
             self.background = pygame.Surface(self.screen.get_size()).convert()
-            self.gameFont = pygame.font.SysFont("gadugi", 32)
+
             self.gameClock = pygame.time.Clock()
 
             self.score = 0
+            self.combo = 0
+
+            #Text objects
+            self.gameFont = pygame.font.SysFont("gadugi", 32)   #font object
             self.scoreText = self.gameFont.render("Score:"+str(self.score), True, (50,0,0))
             self.controlText = self.gameFont.render("Use Q, W, E, and R to hit the notes!", True, (255,255,255))
             self.titleText = self.gameFont.render("PyRhythm!", True, (255, 255, 255))
+            self.missText = self.gameFont.render("Miss :(", True, (200,0,0))
+            self.missIter = 0   #variable that iterates to keep track of how long the miss is on screen for
 
+            #Song Object
             self.Song1 = song.Song(stacys_mom.filename ,stacys_mom.track1, stacys_mom.track2, stacys_mom.track3, stacys_mom.track4)
 
             self.notes = []
@@ -82,12 +90,16 @@ class Controller:
                                 if(pygame.sprite.collide_rect(self.notes[i], self.catcher1)):
                                     self.background.fill((255,255,255))
                                     self.score += 100
+                                    self.combo += 1
                                     self.notes[i].kill()    #adds to score and delete the note
                                     del self.notes[i]
                                     break
+                                if self.score >= 50:             #if no note is colliding with the catcher, you are penalized
+                                    self.score -= 50
+                                    self.missIter += 5
                                 else:
-                                    if self.score >= 5:
-                                        self.score -= 5
+                                    self.score = 0
+                                    self.missIter += 5
 
                         elif (event.key == pygame.K_w):
                             self.catcher2.trackhit = 5     #tells the controller below to change the catcher's color
@@ -96,12 +108,16 @@ class Controller:
                                 if(pygame.sprite.collide_rect(self.notes[i], self.catcher2)):
                                     self.background.fill((255,255,255))
                                     self.score += 100
+                                    self.combo += 1
                                     self.notes[i].kill()
                                     del self.notes[i]
                                     break
+                                if self.score >= 50:
+                                    self.score -= 50
+                                    self.missIter += 5
                                 else:
-                                    if self.score >= 5:
-                                        self.score -= 5
+                                    self.score = 0
+                                    self.missIter += 5
 
                         elif (event.key == pygame.K_e):
                             self.catcher3.trackhit = 5     #tells the controller below to change the catcher's color
@@ -110,12 +126,16 @@ class Controller:
                                 if(pygame.sprite.collide_rect(self.notes[i], self.catcher3)):
                                     self.background.fill((255,255,255))
                                     self.score += 100
+                                    self.combo += 1
                                     self.notes[i].kill()
                                     del self.notes[i]
                                     break
+                                if self.score >= 50:
+                                    self.score -= 50
+                                    self.missIter += 5
                                 else:
-                                    if self.score >= 5:
-                                        self.score -= 5
+                                    self.score = 0
+                                    self.missIter += 5
 
                         elif (event.key == pygame.K_r):
                             self.catcher4.trackhit = 5     #tells the controller below to change the catcher's color
@@ -124,12 +144,17 @@ class Controller:
                                 if(pygame.sprite.collide_rect(self.notes[i], self.catcher4)):
                                     self.background.fill((255,255,255))
                                     self.score += 100
+                                    self.combo += 1
                                     self.notes[i].kill()
                                     del self.notes[i]
                                     break
+                                if self.score >= 50:
+                                    self.score -= 50
+                                    self.missIter += 5
                                 else:
-                                    if self.score >= 5:
-                                        self.score -= 5
+                                    self.score = 0
+                                    self.missIter += 5
+
 
                 ##END OF EVENT LOOP
 
@@ -157,8 +182,6 @@ class Controller:
                         i.trackhit -= 1
 
 
-
-
                 #note spawning
                 """The notespawning system works as follows: For the song, which is 120 BPM, 10 ticks in 40 fps is an eighth note in the Song
                 , so SpawnTimer will iterate 10 times. On the 10th iteration, it will increase another iteration variable, spawnIter, and then
@@ -178,14 +201,15 @@ class Controller:
                         if(self.Song1.track4[spawnIter] == 1):
                             self.notes.append(note.Note("assets/note4.png",450, 0, self.noteSpeed))
                         spawnIter += 1
-
                 else:
                     spawnTimer += 1
+
 
                 #moves all the notes
                 """ iterates through the list of note objects and calls their move method"""
                 for i in self.notes:
                     i.move()
+
 
                 #checks to see if notes have gone off the screen, if so delete them
                 """ITerates through the list of notes, and deletes them if they have gone too low, as well well subtracting points from their score"""
@@ -195,9 +219,14 @@ class Controller:
                         del self.notes[i]
                         if self.score >= 50:
                             self.score -= 50
+                        else:
+                            self.score = 0
+                        self.missIter += 5
                         break
 
-
+                #if a miss happens, break the combo
+                if self.missIter != 0:
+                    self.combo = 0
 
                 ###END OF GAME LOOP STUFF
                 self.screen.blit(self.background, (0, 0))
@@ -207,6 +236,12 @@ class Controller:
                 #updates score and displays it
                 self.scoreText = self.gameFont.render("Score:"+str(self.score), True, (50,0,0))
                 self.screen.blit(self.scoreText, (50,50))
+                #Displays "Miss" is a note is missed
+                if(self.missIter > 0):
+                    self.screen.blit(self.missText, (50+random.randrange(-10,10),75+random.randrange(-10,10)))
+                    self.missIter -= 1
+                if(self.combo != 0):
+                    self.screen.blit(self.gameFont.render(str(self.combo)+ "Hit!", True, (0,250,0)), (50,25))
                 pygame.display.flip()
 
             #### END OF GAME LOOP
