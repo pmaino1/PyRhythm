@@ -20,11 +20,11 @@ class Controller:
             self.combo = 0
 
             #Text objects
-            self.gameFont = pygame.font.SysFont("gadugi", 32)   #font object
-            self.scoreText = self.gameFont.render("Score:"+str(self.score), True, (50,0,0))
-            self.controlText = self.gameFont.render("Use Q, W, E, and R to hit the notes!", True, (255,255,255))
-            self.titleText = self.gameFont.render("PyRhythm!", True, (255, 255, 255))
-            self.missText = self.gameFont.render("Miss :(", True, (200,0,0))
+            self.gameFont1 = pygame.font.SysFont("gadugi", 30)   #font object
+            self.gameFont2 = pygame.font.SysFont("systembold", 60)
+            self.controlText = self.gameFont1.render("Use Q, W, E, and R to hit the notes!", True, (255,255,255))
+            self.titleText = self.gameFont2.render("PyRhythm!", True, (150, 200, 150))
+            self.missText = self.gameFont1.render("Miss :(", True, (200,0,0))
             self.missIter = 0   #variable that iterates to keep track of how long the miss is on screen for
 
             #Song Object
@@ -63,7 +63,7 @@ class Controller:
 
                 self.screen.blit(self.background, (0, 0))
                 self.screen.blit(self.controlText, (50, 50))
-                self.screen.blit(self.titleText, (250,240))
+                self.screen.blit(self.titleText, (50,240))
                 pygame.display.flip()
             ####END OF TITLE SCREEN LOOP
 
@@ -230,14 +230,13 @@ class Controller:
                 self.sprites = pygame.sprite.Group((self.notes,self.catcher1,self.catcher2,self.catcher3,self.catcher4))
                 self.sprites.draw(self.screen)
                 #updates score and displays it
-                self.scoreText = self.gameFont.render("Score:"+str(self.score), True, (50,0,0))
-                self.screen.blit(self.scoreText, (50,50))
+                self.screen.blit(self.gameFont1.render("Score:"+str(self.score), True, (50,0,0)), (50,50))
                 #Displays "Miss" is a note is missed
                 if(self.missIter > 0):
                     self.screen.blit(self.missText, (50+random.randrange(-10,10),75+random.randrange(-10,10)))
                     self.missIter -= 1
                 if(self.combo != 0):
-                    self.screen.blit(self.gameFont.render(str(self.combo)+ "Hit!", True, (0,250,0)), (50,25))
+                    self.screen.blit(self.gameFont1.render(str(self.combo)+ "Hit!", True, (0,250,0)), (50,25))
                 pygame.display.flip()
 
             #### END OF GAME LOOP
