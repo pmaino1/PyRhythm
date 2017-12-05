@@ -25,8 +25,8 @@ class Controller:
             self.highscoreObj = highscore.HighScore()   #score object that contains the scores from last plays
 
             #Text objects
-            self.gameFont1 = pygame.font.SysFont("gadugi", 30)   #font object
-            self.gameFont2 = pygame.font.SysFont("systembold", 60)
+            self.gameFont1 = pygame.font.SysFont("franklingothic", 30)   #font object
+            self.gameFont2 = pygame.font.SysFont("impact", 60)
             self.controlText = self.gameFont1.render("Use Q, W, E, and R to hit the notes!", True, (255,255,255))
             self.startText = self.gameFont1.render("Press any key to start!", True, (255,255,255))
             self.titleText = self.gameFont2.render("PyRhythm!", True, (150, 200, 150))
@@ -57,6 +57,7 @@ class Controller:
     def mainLoop(self):
             isSongStarted = False #var that keep track on whether the song has started or not
             isSongEnded = False
+            crashed = False
 
             ####TITLE SCREEN LOOP
             isTitleScreen = True
@@ -80,7 +81,6 @@ class Controller:
 
 
             #### START OF GAME LOOP
-            crashed = False
             while not crashed:  #basic game loop, will run until we want to stop #most game logic will be here
 
                 #Makes background cycle between colors
