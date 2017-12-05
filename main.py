@@ -4,6 +4,7 @@ import song
 import stacys_mom
 import colorCycle
 import random
+import highscore
 
 class Controller:
     def __init__(self, width =640, height = 480):
@@ -14,21 +15,31 @@ class Controller:
             pygame.display.set_caption("PyRhythm!")  #sets caption for window
             self.background = pygame.Surface(self.screen.get_size()).convert()
 
-            self.gameClock = pygame.time.Clock()
+            self.gameClock = pygame.time.Clock()    #clock object
+
+            self.colorObj = colorCycle.ColorCycler()    #color object, reps the color of the background
 
             self.score = 0
             self.combo = 0
+            self.highestCombo = 0
+            self.highscoreObj = highscore.HighScore()   #score object that contains the scores from last plays
 
             #Text objects
             self.gameFont1 = pygame.font.SysFont("gadugi", 30)   #font object
             self.gameFont2 = pygame.font.SysFont("systembold", 60)
             self.controlText = self.gameFont1.render("Use Q, W, E, and R to hit the notes!", True, (255,255,255))
+            self.startText = self.gameFont1.render("Press any key to start!", True, (255,255,255))
             self.titleText = self.gameFont2.render("PyRhythm!", True, (150, 200, 150))
             self.missText = self.gameFont1.render("Miss :(", True, (200,0,0))
-            self.missIter = 0   #variable that iterates to keep track of how long the miss is on screen for
+            self.highscoreText = self.gameFont1.render(
+            "High Score = " + str(self.highscoreObj.topScore) +
+            ", High Combo = " + str(self.highscoreObj.topCombo),
+            True, (0,150,0))
+
+            self.missIter = 0   #variable that iterates to keep track of how long the miss animation is on screen for
 
             #Song Object
-            self.Song1 = song.Song(stacys_mom.filename ,stacys_mom.track1, stacys_mom.track2, stacys_mom.track3, stacys_mom.track4)
+            self.Song1 = song.Song(stacys_mom.filename, stacys_mom.framesInEight, stacys_mom.track1, stacys_mom.track2, stacys_mom.track3, stacys_mom.track4)
 
             self.notes = []
             self.noteSpeed = 3
@@ -44,36 +55,36 @@ class Controller:
 
 
     def mainLoop(self):
-            spawnIter = 0   #iteration variable to control the song file reading
-            spawnTimer = 0 #iteration variable to make the computer read the notes at proper times
-            crashed = False         #Vars to control the game and title screen loops
-            isSongStarted = False
-
-
-            (r, g, b) = (255, 255, 255)
-            colorFlag = True
+            isSongStarted = False #var that keep track on whether the song has started or not
+            isSongEnded = False
 
             ####TITLE SCREEN LOOP
             isTitleScreen = True
             while isTitleScreen:
                 for event in pygame.event.get():
-                    if (event.type == pygame.KEYDOWN):
+                    if (event.type == pygame.QUIT):   #this will check if we do the quit event, and will crash the program
+                        isTitleScreen = False
+                        crashed = True
+                        break
+                    if (event.type == pygame.KEYDOWN):  #will start the game if any key is pressed
                         isTitleScreen = False
                         break
 
                 self.screen.blit(self.background, (0, 0))
-                self.screen.blit(self.controlText, (50, 50))
+                self.screen.blit(self.controlText, (50, 50))    #puts all the text on the screen
+                self.screen.blit(self.startText, (50,90))
                 self.screen.blit(self.titleText, (50,240))
+                self.screen.blit(self.highscoreText, (50,380))
                 pygame.display.flip()
             ####END OF TITLE SCREEN LOOP
 
 
             #### START OF GAME LOOP
+            crashed = False
             while not crashed:  #basic game loop, will run until we want to stop #most game logic will be here
 
                 #Makes background cycle between colors
-                (r,g,b, colorFlag) = colorCycle.cycle(r,g,b, colorFlag)
-                self.background.fill((r, g, b))
+                self.colorObj.cycle(self.background)
 
                 self.gameClock.tick_busy_loop(40)
                 print(self.gameClock.get_fps())
@@ -95,10 +106,10 @@ class Controller:
                                     break
                                 if self.score >= 50:             #if no note is colliding with the catcher, you are penalized
                                     self.score -= 50
-                                    self.missIter += 5
+                                    self.missIter = 6
                                 else:
                                     self.score = 0
-                                    self.missIter += 5
+                                    self.missIter = 6
 
                         elif (event.key == pygame.K_w):
                             self.catcher2.trackhit = 5     #tells the controller below to change the catcher's color
@@ -112,10 +123,10 @@ class Controller:
                                     break
                                 if self.score >= 50:
                                     self.score -= 50
-                                    self.missIter += 5
+                                    self.missIter = 6
                                 else:
                                     self.score = 0
-                                    self.missIter += 5
+                                    self.missIter = 6
 
                         elif (event.key == pygame.K_e):
                             self.catcher3.trackhit = 5     #tells the controller below to change the catcher's color
@@ -129,10 +140,10 @@ class Controller:
                                     break
                                 if self.score >= 50:
                                     self.score -= 50
-                                    self.missIter += 5
+                                    self.missIter = 6
                                 else:
                                     self.score = 0
-                                    self.missIter += 5
+                                    self.missIter = 6
 
                         elif (event.key == pygame.K_r):
                             self.catcher4.trackhit = 5     #tells the controller below to change the catcher's color
@@ -146,15 +157,16 @@ class Controller:
                                     break
                                 if self.score >= 50:
                                     self.score -= 50
-                                    self.missIter += 5
+                                    self.missIter = 6
                                 else:
                                     self.score = 0
-                                    self.missIter += 5
+                                    self.missIter = 6
 
 
                 ##END OF EVENT LOOP
 
                 #Audio start controller
+                """When the first note hits the catcher, isSongStarted becomes True, and the song begins."""
                 if not isSongStarted:
                     for i in self.notes:
                         for j in self.catchers:
@@ -162,7 +174,8 @@ class Controller:
                                 self.Song1.playSong()
                                 isSongStarted = True
                                 break
-
+                        if isSongStarted:
+                            break
 
                 #CATCHER ANIMATION CONTROLLER
                 """When a key is pressed the "trackhit" value for the catcher objects are set to 5,
@@ -183,22 +196,20 @@ class Controller:
                 , so SpawnTimer will iterate 10 times. On the 10th iteration, it will increase another iteration variable, spawnIter, and then
                 indexes the 4 lists of the song using spawnIter. Each list represents a track, and if it sees a 1 on that list, it will spawn a
                 note on the corresponding track. 2 will signify the end of the program"""
-                if spawnTimer == 9:
-                    spawnTimer = 0
-                    if(self.Song1.track1[spawnIter] == 2):
-                        print("the end")
+                spawnDict = self.Song1.advFrame()   #spawnDict holds the 1, 0, or 2 from the track in the song class
+
+                if spawnDict:   #if spawnDict isnt empty
+                    if(spawnDict[1] == 2):
+                        print('end')
                     else:
-                        if(self.Song1.track1[spawnIter] == 1):
+                        if(spawnDict[1] == 1):
                             self.notes.append(note.Note("assets/note1.png",150, 0, self.noteSpeed))
-                        if(self.Song1.track2[spawnIter] == 1):
+                        if(spawnDict[2] == 1):
                             self.notes.append(note.Note("assets/note2.png",250, 0, self.noteSpeed))
-                        if(self.Song1.track3[spawnIter] == 1):
+                        if(spawnDict[3] == 1):
                             self.notes.append(note.Note("assets/note3.png",350, 0, self.noteSpeed))
-                        if(self.Song1.track4[spawnIter] == 1):
+                        if(spawnDict[4] == 1):
                             self.notes.append(note.Note("assets/note4.png",450, 0, self.noteSpeed))
-                        spawnIter += 1
-                else:
-                    spawnTimer += 1
 
 
                 #moves all the notes
@@ -223,6 +234,22 @@ class Controller:
                 #if a miss happens, break the combo
                 if self.missIter != 0:
                     self.combo = 0
+                #keeps track of your highest combo
+                if self.combo > self.highestCombo:
+                    self.highestCombo = self.combo
+
+                #HIGH SCORE HANDLING AT END OF SONG
+                """IF there are no notes on the screen, and the song isnt ended, it will check if you beat the high highscores
+                and will update them in the text file, then it will set the song as ended"""
+                if not self.notes and not isSongEnded:  #if there are no notes on the screen
+                    if self.score > self.highscoreObj.topScore:
+                        self.highscoreObj.topScore = self.score
+                    if self.highestCombo > self.highscoreObj.topCombo:
+                        self.highscoreObj.topCombo = self.highestCombo
+                    self.highscoreObj.export()
+                    isSongEnded = True
+
+
 
                 ###END OF GAME LOOP STUFF
                 self.screen.blit(self.background, (0, 0))
@@ -231,10 +258,14 @@ class Controller:
                 self.sprites.draw(self.screen)
                 #updates score and displays it
                 self.screen.blit(self.gameFont1.render("Score:"+str(self.score), True, (50,0,0)), (50,50))
+
                 #Displays "Miss" is a note is missed
+                """MissIter will be a non0 value if a note was missed, which will prompt this code block to displays
+                the "Miss" test until MissIter returns to 0"""
                 if(self.missIter > 0):
                     self.screen.blit(self.missText, (50+random.randrange(-10,10),75+random.randrange(-10,10)))
                     self.missIter -= 1
+                #Only displays the combo is it is non 0
                 if(self.combo != 0):
                     self.screen.blit(self.gameFont1.render(str(self.combo)+ "Hit!", True, (0,250,0)), (50,25))
                 pygame.display.flip()
