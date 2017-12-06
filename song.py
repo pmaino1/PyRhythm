@@ -2,6 +2,11 @@ import pygame
 
 class Song:
     def __init__(self, filename,framesInEight, track1, track2, track3, track4):
+        """
+        Creates list for each track, loads the song, and tracks the frames in each eighth note.
+        param:(object,file,int,list) needs self, song file, the amount of frames in an eighth note, list of tracks
+        return (None)
+        """
         self.track1 = list(track1)
         self.track2 = list(track2)
         self.track3 = list(track3)
@@ -13,9 +18,19 @@ class Song:
         self.spawnIter = 0
 
     def playSong(self):
+        """
+        Plays the song file.
+        param:(object) only needs self
+        return (None)
+        """
         pygame.mixer.music.play(0)
 
     def advFrame(self):
+        """
+        Runs through the amount of frames per eighth note and spawns notes on each track.
+        param:(object) only needs self
+        return {}
+        """
         output = {} #list length 4, a 1 reps a note, a 0 a rest, a 2 the end of the song
 
         if self.spawnTimer == self.framesInEight:

@@ -4,6 +4,11 @@ import os
 class HighScore:
 
     def __init__(self, filename = "highscores.txt"):
+        """
+        Creates a file containing the top score and the top combo.
+        param:(object,file) needs self and a filename
+        return (None)
+        """
         self.filename = filename
         topScore = 0
         topCombo = 0
@@ -28,6 +33,11 @@ class HighScore:
 
 
     def export(self):
+        """
+        Deletes the existing file and creates a new one with updated information.
+        param:(object) only needs self
+        return: (None)
+        """
         os.remove(self.filename)
         data = {}
         data["scores"] = []
