@@ -1,1 +1,1 @@
-{"scores": [{"topScore": 100, "topCombo": 1}]}
+{"scores": [{"topScore": 29800, "topCombo": 109}]}

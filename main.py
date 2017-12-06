@@ -35,6 +35,7 @@ class Controller:
             "High Score = " + str(self.highscoreObj.topScore) +
             ", High Combo = " + str(self.highscoreObj.topCombo),
             True, (0,150,0))
+            self.endText = self.gameFont2.render("Fin", True, (10,10,10))
 
             self.missIter = 0   #variable that iterates to keep track of how long the miss animation is on screen for
 
@@ -268,6 +269,13 @@ class Controller:
                 #Only displays the combo is it is non 0
                 if(self.combo != 0):
                     self.screen.blit(self.gameFont1.render(str(self.combo)+ "Hit!", True, (0,250,0)), (50,25))
+                if(isSongEnded):
+                    self.screen.blit(self.endText, (50,self.height/2))
+                    self.highscoreText = self.gameFont1.render(
+                    "High Score = " + str(self.highscoreObj.topScore) +
+                    ", High Combo = " + str(self.highscoreObj.topCombo),
+                    True, (0,150,0))
+                    self.screen.blit(self.highscoreText, ((50,self.height/2-100)))
                 pygame.display.flip()
 
             #### END OF GAME LOOP
