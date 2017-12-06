@@ -87,7 +87,7 @@ class Controller:
                 self.colorObj.cycle(self.background)
 
                 self.gameClock.tick_busy_loop(40)
-                print(self.gameClock.get_fps())
+                #print(self.gameClock.get_fps())
                 ##EVENT LOOP
                 for event in pygame.event.get():    #pygame has events: basically "when things happen"
                     if (event.type == pygame.QUIT):   #this will check if we do the quit event, and will crash the program
@@ -241,7 +241,7 @@ class Controller:
                 #HIGH SCORE HANDLING AT END OF SONG
                 """IF there are no notes on the screen, and the song isnt ended, it will check if you beat the high highscores
                 and will update them in the text file, then it will set the song as ended"""
-                if not self.notes and not isSongEnded:  #if there are no notes on the screen
+                if not self.notes and not isSongEnded and isSongStarted:  #if there are no notes on the screen
                     if self.score > self.highscoreObj.topScore:
                         self.highscoreObj.topScore = self.score
                     if self.highestCombo > self.highscoreObj.topCombo:
